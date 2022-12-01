@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const colors = ['E57373','F06292', 'BA68C8', '9575CD','7986CB','64B5F6','29B6F6','00BCD4','009688','FF5722','8D6E63'];
+        const text = "Pellentesque in ipsum id orci porta dapibus. Pellentesque in ipsum id orci porta dapibus. Donec sollicitudin molestie malesuada. Nulla porttitor accumsan tincidunt. Donec sollicitudin molestie malesuada.";
+
+        const words = text.split(' ')
+
+        let randomColor = () => colors[Math.floor(Math.random() * colors.length)];
+
+        const style = color => `
+            background:#${color};
+            padding:5px;
+            display:inline-block;
+            margin-bottom:2px
+        `
+        const word = words.map( w =>  `<span style="${style(randomColor())}"> ${w}</span>`)
+       
+        const p = document.createElement('p');
+        p.innerHTML = word.join(' ');
+
+        document.body.appendChild(p)
+
+    </script>
+    
+</body>
+</html>

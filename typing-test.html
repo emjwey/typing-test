@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Test</title>
+   
+
+</head>
+
+<style>
+    *{
+    box-sizing: border-box;
+    }
+    body{
+        background:#0F172A
+    }
+    .content {
+        padding: 4rem;
+        border-radius:1rem ;
+        text-align:center;
+        background:#334155;
+        max-width: 700px;
+        width: 100%;
+        transform:translate(-50%, -50%);
+        position: absolute;
+        top:50%;
+        left:50%;
+        font-size:1.5rem;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        
+
+    }
+    .scoring {
+        display:flex;
+        gap:1rem;
+       
+
+    }
+    .scoring > div{
+        width:calc(100%/3);
+        background:#A855F7;
+        color:#fff;
+        border-radius: .75rem;
+        padding:.5rem;
+        display:flex;
+        flex-wrap: wrap-reverse;
+        height:100px;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .header-title{
+        margin-bottom:2rem
+    }
+    .header-title h1{
+        text-transform: uppercase;
+        color:#fff;
+        font-size:2.5rem;
+        margin-top:0;
+    }
+    #startGame{
+        padding:1rem 2rem;
+        font-size:1rem;
+        font-weight: bold;
+        border:none;
+        border-radius: .7rem;
+        cursor: pointer;
+        text-transform: uppercase;
+        background:#fff;
+
+
+    }
+    #displayWord{
+        padding:.4rem .8rem;
+        background:#0369A1;
+        border-radius: .25rem;
+        display: inline-block;
+        color:#fff;
+    }
+    #inputWord{
+        border:none;
+        border-bottom: 2px solid #fff;
+        outline:none;
+        font-size:1.4rem;
+        background:transparent;
+        padding: 1rem 0;
+        text-align: center;
+        color:#fff;
+        ;
+
+    }
+    #wordsInputted{
+        max-height: 113px;
+        overflow: hidden;
+    }
+    #wordsInputted > span{
+        display: inline-block;
+        margin:5px 2px;
+        padding:.5rem;
+        color:#fff;
+        border-radius: .4rem;
+
+    }
+    #wordsInputted .red{
+        background:#DC2626
+    }
+    #wordsInputted .green{
+        background-color: #15803D;
+    }
+    .hide{
+        display: none !important;
+    }
+    .show{
+        display:block !important
+    }
+</style>
+
+<body>
+    <div class="content ">
+        <section>
+            <div class="header-title">
+                <h1>Typing Test</h1>
+                <button id="startGame">Start</button>
+            </div>
+            <div id="stats" class="scoring hide">
+                <div><label>WPM</label> <span id="score-wpm">0.00</span></div>
+                <div><label>Correct</label> <span id="score-score">0</span></div>
+                <div><label>Time Left</label> <span id="score-time">0</span></div>
+            </div>
+            
+        </section>
+        <section id="info">
+            <p id="displayWord" class="hide">okk</p>
+            <form id="form">
+                <input id="inputWord"  class="btn hide" type="text" >
+            </form>
+            <p id="wordsInputted" class="hide"></p>
+        </section>
+    </div>
+    <script>
+
+        const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum congue leo eget malesuada. Donec rutrum congue leo eget malesuada. Donec rutrum congue leo eget malesuada. Donec sollicitudin molestie malesuada. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Quisque velit nisi, pretium ut lacinia in, elementum id enim. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Donec rutrum congue leo eget malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Donec rutrum congue leo eget malesuada. Sed porttitor lectus nibh. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Nulla porttitor accumsan tincidunt. Nulla quis lorem ut libero malesuada feugiat.";
+
+        const startGame = document.getElementById("startGame");
+        const displayWord = document.getElementById("displayWord");
+        const inputWord = document.getElementById("inputWord");
+        const stats = document.getElementById("stats");
+        const form = document.getElementById("form");
+        const wordsInputted = document.getElementById("wordsInputted");
+        const scoreScore = document.getElementById("score-score");
+        const scoreWpm = document.getElementById("score-wpm");
+        const scoreTime = document.getElementById("score-time");
+        const infoType = document.getElementById("info");
+
+        let startInterval;
+
+        const state = {
+            currentWord: '',
+            correctWords: 0,
+            gameDuration: 10,
+            timeElapse:0
+        }
+
+        const words = lorem.split(' ');
+
+        const randomWord = () => words[Math.floor(Math.random() * words.length)]
+
+        const displayRandomWord = () => {
+            const word = randomWord()
+            displayWord.textContent = word;
+            state.currentWord = word ;
+
+        }
+        // click the start game button
+        startGame.addEventListener('click', () => {
+            // hide button
+            startGame.classList.add("hide");
+            // show stats
+            stats.classList.remove('hide')
+            // show input and focus on input
+            inputWord.classList.remove('hide')
+            inputWord.focus();
+            // show word
+            displayWord.classList.remove('hide');
+            wordsInputted.classList.remove('hide')
+            // display the random word
+            displayRandomWord();
+
+            // start timer
+            startInterval = setInterval(timer,1000);
+
+        })
+
+        const timer = () =>{
+                state.timeElapse ++;
+                renderStats();
+                if(state.timeElapse === state.gameDuration){
+                    clearInterval(startInterval);
+                    state.currentWord = 0;
+                    state.correctWords = 0;
+                    state.timeElapse = 0;
+                    infoType.classList =  "hide"
+                }
+            }
+
+        //create span word with color
+        const span = (color, word) => {
+            // create span element
+            let span = document.createElement("span");
+            // set color in the span
+            span.classList = color;
+            // set the word 
+            span.innerText = word;
+            // return the complete span
+            return span
+        }
+
+        
+
+       
+
+        //stats
+        const renderStats = () => {
+            // display correct words
+            scoreScore.innerText = state.correctWords;
+            // calculate wpm
+            // correct words devided by ( passed time devided by 1 minute)
+            scoreWpm.innerText = Number(state.correctWords / (state.timeElapse/ 60)).toFixed(2)
+            scoreTime.innerText = state.gameDuration - state.timeElapse
+        }
+
+        // input word 
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            pressKey();
+
+        })
+
+        document.body.onkeyup = function(e) {
+            if (e.key == " " ||
+                e.code == "Space" ||      
+                e.keyCode == 32      
+            ) {
+                pressKey(e);
+            }
+        }
+
+        const pressKey = (e) => {
+             // store the current random word
+             const currentWord = state.currentWord;
+            
+            // get the word in the input
+            const word = inputWord.value.replace(/ /g, '');
+            if(word === "" || word === " ") return;
+            
+            //record correct words
+            if(word === currentWord) {
+                state.correctWords += 1;
+                renderStats();
+            }
+
+            // display new random word
+            displayRandomWord();
+
+            //validate if it matched to the current word
+            let color = word === currentWord ? "green" : "red"
+
+            //append current random word
+            wordsInputted.prepend(span(color,word))
+            
+            //clear input
+            inputWord.value ="";
+        }
+        
+       
+    </script>
+</body>
+</html>
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
